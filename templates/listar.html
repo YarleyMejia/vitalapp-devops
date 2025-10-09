@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Citas Agendadas | Salud Vital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center text-primary mb-4">Citas Agendadas</h1>
+
+        {% if citas %}
+            <table class="table table-striped table-hover shadow-sm bg-white">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cédula</th>
+                        <th>Correo</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas %}
+                    <tr>
+                        <td>{{ cita.nombre }}</td>
+                        <td>{{ cita.cedula }}</td>
+                        <td>{{ cita.correo }}</td>
+                        <td>{{ cita.fecha }}</td>
+                        <td>{{ cita.hora }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info text-center">No hay citas registradas.</div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('cita.agendar') }}" class="btn btn-success me-2">Agendar Nueva Cita</a>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-dark">Volver al Inicio</a>
+        </div>
+    </div>
+</body>
+</html>

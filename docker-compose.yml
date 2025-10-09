@@ -1,32 +1,21 @@
-version: '3.9'
-
 services:
   web:
     build: .
     image: cosmis/vitalapp_web:latest
     ports:
       - "5000:5000"
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/
     volumes:
       - .:/app
     depends_on:
       - mongo
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   mongo:
-    image: mongo:6.0
+    image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - vitalapp_mongo_data:/data/db
-    restart: always
+      - vitalapp_db:/data/db
 
 volumes:
-  vitalapp_mongo_data:
+  vitalapp_db:
