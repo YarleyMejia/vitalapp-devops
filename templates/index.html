@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Salud Vital - Agendamiento de Citas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f5f5f5;
+    }
+    h1 { color: #008080; }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      margin-bottom: 30px;
+    }
+    label { display: block; margin-top: 10px; }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #008080;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 15px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #006666; }
+    table {
+      background: white;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    th { background: #008080; color: white; }
+  </style>
+</head>
+<body>
+  <h1>🩺 Agendamiento de Citas - Salud Vital</h1>
+
+  <form method="POST" action="/agendar">
+    <label for="paciente">Nombre del paciente:</label>
+    <input type="text" id="paciente" name="paciente" required />
+
+    <label for="tipo_consulta">Tipo de consulta:</label>
+    <select id="tipo_consulta" name="tipo_consulta" required>
+      <option value="">Seleccione...</option>
+      <option value="Medicina general">Medicina general</option>
+      <option value="Odontología">Odontología</option>
+      <option value="Pediatría">Pediatría</option>
+      <option value="Cardiología">Cardiología</option>
+    </select>
+
+    <label for="fecha_cita">Fecha y hora de la cita:</label>
+    <input type="datetime-local" id="fecha_cita" name="fecha_cita" required />
+
+    <button type="submit">Agendar cita</button>
+  </form>
+
+  {% if citas %}
+  <h2>Citas agendadas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Paciente</th>
+        <th>Tipo de consulta</th>
+        <th>Fecha y hora</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in citas %}
+      <tr>
+        <td>{{ c.paciente }}</td>
+        <td>{{ c.tipo_consulta }}</td>
+        <td>{{ c.fecha_cita }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No hay citas registradas.</p>
+  {% endif %}
+</body>
+</html>

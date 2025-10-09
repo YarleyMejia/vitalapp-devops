@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VitalApp - Citas Agendadas</title>
+</head>
+<body>
+    <h1>Citas Agendadas</h1>
+    <ul>
+        {% for cita in citas %}
+            <li>{{ cita.paciente }} - {{ cita.fecha_cita.strftime('%d-%m-%Y %H:%M') }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Volver a agendar</a>
+</body>
+</html>
