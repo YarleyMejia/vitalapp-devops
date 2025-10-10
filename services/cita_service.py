@@ -8,7 +8,7 @@ class CitaService:
         mongo_uri = os.environ.get("MONGO_URI")
         if not mongo_uri:
             raise ValueError("La variable MONGO_URI no está definida en el entorno.")
-        
+
         # Conexión con MongoDB Atlas
         self.client = MongoClient(mongo_uri)
         self.db = self.client["salud_vital"]
