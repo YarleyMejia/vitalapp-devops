@@ -11,3 +11,4 @@ COPY . .
 ENV PYTHONPATH=/app
 
 CMD ["python", "app.py"]
+ENV PYTHONPATH=/app
