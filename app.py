@@ -1,7 +1,12 @@
 from flask import Flask, render_template
 from routes.cita_routes import cita_bp
 from services.cita_service import CitaService
+from dotenv import load_dotenv
 import os
+
+# ✅ Cargar las variables del archivo .env
+load_dotenv()
+print("MONGO_URI cargado:", os.getenv("MONGO_URI"))  # 👈 línea temporal para probar
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY") or "clave_super_secreta_123"
