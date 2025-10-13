@@ -8,9 +8,8 @@
 <body class="bg-light">
     <div class="container py-5">
         <h1 class="text-center text-primary mb-4">Agendar Cita</h1>
-        <p class="text-center text-muted mb-5">Sistema de gestión médica <strong>VitalApp</strong> — agenda tu cita, consulta tus registros o cancela una cita existente.</p>
 
-        <form method="POST" class="bg-white p-4 rounded shadow-sm mx-auto" style="max-width: 600px;">
+        <form method="POST" class="bg-white p-4 rounded shadow-sm mx-auto" style="max-width: 700px;">
             <div class="mb-3">
                 <label class="form-label">Nombre completo</label>
                 <input type="text" name="nombre" class="form-control" required>
@@ -23,14 +22,38 @@
                 <label class="form-label">Correo electrónico</label>
                 <input type="email" name="correo" class="form-control" required>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Fecha</label>
-                <input type="date" name="fecha" class="form-control" required>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Especialidad</label>
+                    <select id="especialidad" name="especialidad" class="form-select" required>
+                        <option value="">-- Seleccione --</option>
+                        {% for e in especialidades %}
+                        <option value="{{ e }}">{{ e }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Profesional</label>
+                    <select id="profesional" name="profesional" class="form-select" required>
+                        <option value="">-- Seleccione especialidad --</option>
+                    </select>
+                </div>
             </div>
+
+            <div class="mb-3 mt-3">
+                <label class="form-label">Fecha</label>
+                <input id="fecha" type="date" name="fecha" class="form-control" value="{{ fecha }}" min="{{ fecha }}" required>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Hora</label>
-                <input type="time" name="hora" class="form-control" required>
+                <select id="hora" name="hora" class="form-select" required>
+                    <option value="">Seleccione profesional y fecha</option>
+                </select>
             </div>
+
             <button type="submit" class="btn btn-primary w-100 mt-3">Agendar Cita</button>
         </form>
 
@@ -39,5 +62,57 @@
             <a href="{{ url_for('home') }}" class="btn btn-outline-dark">Volver al Inicio</a>
         </div>
     </div>
+
+<script>
+const ESPECIALIDADES = JSON.parse('{{ especialidades | tojson | safe }}');
+const profesionalSelect = document.getElementById('profesional');
+const especialidadSelect = document.getElementById('especialidad');
+const fechaInput = document.getElementById('fecha');
+const horaSelect = document.getElementById('hora');
+
+especialidadSelect?.addEventListener('change', () => {
+    const esp = especialidadSelect.value;
+    profesionalSelect.innerHTML = '<option value="">-- Seleccione --</option>';
+    if (!esp) return;
+    const pros = ESPECIALIDADES[esp];
+    pros.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        profesionalSelect.appendChild(opt);
+    });
+    rellenarHoras();
+});
+
+profesionalSelect?.addEventListener('change', rellenarHoras);
+fechaInput?.addEventListener('change', rellenarHoras);
+
+async function rellenarHoras(){
+    const fecha = fechaInput.value;
+    const profesional = profesionalSelect.value;
+    horaSelect.innerHTML = '<option value="">Cargando...</option>';
+    if (!fecha || !profesional) {
+        horaSelect.innerHTML = '<option value="">Seleccione profesional y fecha</option>';
+        return;
+    }
+    try {
+        const resp = await fetch(`/cita/horas_disponibles?fecha=${fecha}&profesional=${encodeURIComponent(profesional)}`);
+        const data = await resp.json();
+        horaSelect.innerHTML = '';
+        if (data.horas && data.horas.length) {
+            data.horas.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h;
+                opt.textContent = h;
+                horaSelect.appendChild(opt);
+            });
+        } else {
+            horaSelect.innerHTML = '<option value="">No hay horas disponibles</option>';
+        }
+    } catch (err) {
+        horaSelect.innerHTML = '<option value="">Error al obtener horas</option>';
+    }
+}
+</script>
 </body>
 </html>

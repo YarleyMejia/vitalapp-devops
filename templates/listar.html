@@ -9,25 +9,58 @@
     <div class="container py-5">
         <h1 class="text-center text-primary mb-4">Citas Agendadas</h1>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, msg in messages %}
+              <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="mb-3">
+            <form class="row g-2" method="get" action="{{ url_for('cita.listar') }}">
+                <div class="col-auto">
+                    <input type="text" name="cedula" class="form-control" placeholder="Buscar por cédula">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-secondary">Buscar</button>
+                </div>
+            </form>
+        </div>
+
         {% if citas %}
             <table class="table table-striped table-hover shadow-sm bg-white">
                 <thead class="table-primary">
                     <tr>
+                        <th>#</th>
                         <th>Nombre</th>
                         <th>Cédula</th>
                         <th>Correo</th>
+                        <th>Especialidad</th>
+                        <th>Profesional</th>
                         <th>Fecha</th>
                         <th>Hora</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cita in citas %}
                     <tr>
+                        <td>{{ loop.index }}</td>
                         <td>{{ cita.nombre }}</td>
                         <td>{{ cita.cedula }}</td>
                         <td>{{ cita.correo }}</td>
+                        <td>{{ cita.especialidad }}</td>
+                        <td>{{ cita.profesional }}</td>
                         <td>{{ cita.fecha }}</td>
                         <td>{{ cita.hora }}</td>
+                        <td>
+                            <a href="{{ url_for('cita.reprogramar', cedula=cita.cedula) }}" class="btn btn-sm btn-warning">Reprogramar</a>
+                            <form method="POST" action="{{ url_for('cita.cancelar') }}" style="display:inline">
+                                <input type="hidden" name="cedula" value="{{ cita.cedula }}">
+                                <button class="btn btn-sm btn-danger" type="submit">Cancelar</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
