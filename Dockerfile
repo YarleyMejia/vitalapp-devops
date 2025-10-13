@@ -22,4 +22,5 @@ ENV FLASK_APP=app.py
 EXPOSE 5000
 
 # Comando de inicio
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app", "--workers", "3", "--threads", "2"]
+CMD exec gunicorn --bind 0.0.0.0:${PORT:-5000} app:app --workers 3 --threads 2
+
