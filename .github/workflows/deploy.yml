@@ -8,6 +8,7 @@ on:
 jobs:
   build-test-lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,14 +20,18 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest flake8
 
+      - name: Show current directory and structure
+        run: pwd && ls -R
+
       - name: Run tests
-        run: pytest -q
+        run: pytest tests -v
 
       - name: Lint with flake8
-        run: flake8 . || true
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
   deploy:
     needs: build-test-lint
