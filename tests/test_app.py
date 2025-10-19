@@ -42,7 +42,7 @@ def test_home_page(client):
 
 
 def test_agendar_cita(client, service):
-    """✅ Prueba que se pueda agendar una cita nueva"""
+    """ Prueba que se pueda agendar una cita nueva"""
     fecha = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
 
     response = client.post(
@@ -65,14 +65,14 @@ def test_agendar_cita(client, service):
 
 
 def test_listar_citas(client):
-    """✅ Prueba la lista de citas"""
+    """ Prueba la lista de citas"""
     response = client.get("/cita/listar")
     assert response.status_code == 200
     assert b"Citas" in response.data or b"Nombre" in response.data
 
 
 def test_reprogramar_cita(service):
-    """✅ Prueba la reprogramación de una cita"""
+    """ Prueba la reprogramación de una cita"""
     # Crear cita original
     service.agendar_cita(
         nombre="Carlos Ruiz",
@@ -106,7 +106,7 @@ def test_reprogramar_cita(service):
 
 
 def test_cancelar_cita(client, service):
-    """✅ Prueba cancelar una cita existente"""
+    """ Prueba cancelar una cita existente"""
     # Crear cita de ejemplo
     service.agendar_cita(
         nombre="Maria Gomez",

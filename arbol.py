@@ -19,5 +19,5 @@ def print_tree(path='.', prefix='', depth=0):
             print_tree(full_path, new_prefix, depth + 1)
 
 if __name__ == "__main__":
-    print("📦 vitalapp-devops")
+    print("vitalapp-devops")
     print_tree(".")

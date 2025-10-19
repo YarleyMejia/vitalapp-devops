@@ -14,4 +14,4 @@ print(db.list_collection_names())
 # Insertar un ejemplo
 db.usuarios.insert_one({"nombre": "Camilo", "rol": "Admin"})
 
-print("✅ Conexión exitosa y dato insertado")
+print("Conexión exitosa y dato insertado")

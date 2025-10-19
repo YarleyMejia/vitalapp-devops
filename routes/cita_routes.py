@@ -59,7 +59,7 @@ def cancelar():
 
 @cita_bp.route('/reprogramar/<cedula>', methods=['GET', 'POST'])
 def reprogramar(cedula):
-    cita = service.obtener_cita_por_cedula(cedula)  # ✅ Usamos el servicio, no SQLAlchemy
+    cita = service.obtener_cita_por_cedula(cedula)  # Usamos el servicio, no SQLAlchemy
 
     if not cita:
         flash('No se encontró una cita con esa cédula.', 'danger')
@@ -82,7 +82,7 @@ def reprogramar(cedula):
         flash('✅ Cita reprogramada exitosamente.', 'success')
         return redirect(url_for('cita.listar'))
 
-    # ✅ Estructura que espera tu template reprogramar.html
+    # Estructura que espera tu template reprogramar.html
     especialidades = {
         "Medicina General": ["Carlos Mejia Lopez", "Alejandra Molina Puerta"],
         "Psicologia": ["Alejandro Gomez Bedoya"],
