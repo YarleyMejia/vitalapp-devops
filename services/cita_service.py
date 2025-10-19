@@ -12,6 +12,9 @@ except ImportError:
 # Cargar variables del archivo .env
 load_dotenv()
 
+# 🧩 Cliente global para compartir mongomock entre instancias
+_mock_client = None
+
 
 class CitaService:
     # Profesionales y especialidades disponibles
@@ -23,12 +26,17 @@ class CitaService:
     }
 
     def __init__(self):
+        global _mock_client
         mongo_uri = os.environ.get("MONGO_URI")
 
-        # 🔹 Si no hay MONGO_URI, o si el entorno pide un mock, usar mongomock
+        # 🔹 Si no hay MONGO_URI o si es modo test, usar mongomock compartido
         if (not mongo_uri or "mock" in str(mongo_uri).lower()) and mongomock:
-            print("⚙️  Usando base de datos simulada con mongomock (modo test)")
-            self.client = mongomock.MongoClient()
+            if _mock_client is None:
+                print("⚙️  Creando cliente global mongomock (modo test)")
+                _mock_client = mongomock.MongoClient()
+            else:
+                print("🔁 Reutilizando cliente global mongomock")
+            self.client = _mock_client
         else:
             if not mongo_uri:
                 raise ValueError("❌ La variable MONGO_URI no está definida en el entorno.")
