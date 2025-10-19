@@ -3,6 +3,12 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
+# Intentar importar mongomock (no pasa nada si no existe)
+try:
+    import mongomock
+except ImportError:
+    mongomock = None
+
 # Cargar variables del archivo .env
 load_dotenv()
 
@@ -18,10 +24,16 @@ class CitaService:
 
     def __init__(self):
         mongo_uri = os.environ.get("MONGO_URI")
-        if not mongo_uri:
-            raise ValueError("❌ La variable MONGO_URI no está definida en el entorno.")
 
-        self.client = MongoClient(mongo_uri)
+        # 🔹 Si no hay MONGO_URI, o si el entorno pide un mock, usar mongomock
+        if (not mongo_uri or "mock" in str(mongo_uri).lower()) and mongomock:
+            print("⚙️  Usando base de datos simulada con mongomock (modo test)")
+            self.client = mongomock.MongoClient()
+        else:
+            if not mongo_uri:
+                raise ValueError("❌ La variable MONGO_URI no está definida en el entorno.")
+            self.client = MongoClient(mongo_uri)
+
         self.db = self.client["salud_vital"]
         self.citas = self.db["citas"]
 
@@ -36,7 +48,6 @@ class CitaService:
 
         while inicio < fin:
             hora_str = inicio.strftime("%H:%M")
-            # Verificar si el profesional ya tiene cita a esa hora
             if not self.citas.find_one({"fecha": fecha, "hora": hora_str, "profesional": profesional}):
                 horas.append(hora_str)
             inicio += intervalo
